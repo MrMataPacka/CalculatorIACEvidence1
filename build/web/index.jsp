@@ -21,6 +21,10 @@
 
             <input type="submit" value="CALCULATE IAC.">
         </form>
+
+        <% if (request.getAttribute("error") != null) { %>
+        <p style="color: red;"><%= request.getAttribute("error") %></p>
+        <% } %>
         
         <% if (request.getAttribute("iac_result") != null) { %>
             <p>YOUR IAC RESULT IS. <%= request.getAttribute("iac_result") %></p>
