@@ -14,10 +14,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-/**
- *
- * @author Angel
- */
+
 @WebServlet(name = "iac_calculation", urlPatterns = {"/iac_calculation"})
 public class iac_calculation extends HttpServlet {
 
@@ -32,7 +29,6 @@ public class iac_calculation extends HttpServlet {
         double height = Double.parseDouble(request.getParameter("height"));
         
         try {
-        // Validaciones básicas del lado del servidor
         if (age < 18 || age > 120) {
             throw new IllegalArgumentException("Age must be between 18 and 120.");
         }
@@ -47,21 +43,16 @@ public class iac_calculation extends HttpServlet {
         }
 
     } catch (NumberFormatException e) {
-        // Manejo de errores en caso de que el input no sea válido
         request.setAttribute("error", "Invalid input, please enter valid numbers.");
         request.getRequestDispatcher("index.jsp").forward(request, response);
     } catch (IllegalArgumentException e) {
-        // Mostrar errores de validación específicos
         request.setAttribute("error", e.getMessage());
         request.getRequestDispatcher("index.jsp").forward(request, response);
     }
-        // Si las validaciones pasan, procede con el cálculo
         IACCalculations calc = new IACCalculations();
         double result = calc.CalculateIAC(hip_circumference, height);
 
-        // Código para insertar en la base de datos sigue aquí...
-        
-        // Enviar el resultado a la JSP
+  
         request.setAttribute("iac_result", result);
         request.getRequestDispatcher("index.jsp").forward(request, response);
         
@@ -69,21 +60,19 @@ public class iac_calculation extends HttpServlet {
         
         
         try {
-                // Intentar cargar el controlador JDBC de MySQL
                 Class.forName("com.mysql.cj.jdbc.Driver");
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();  // Esto te ayudará a ver si hubo un error cargando el controlador
+                e.printStackTrace(); 
                 throw new ServletException("MySQL JDBC Driver not found", e);
             }
         
         
         String url = "jdbc:mysql://localhost:3306/iaccalculatordatabase?useSSL=false&serverTimezone=UTC";
-        String user = "root"; // O el usuario que estés usando para acceder
+        String user = "root"; 
         String password = "04ejemploMAYOR";
         try {
             Connection connection = DriverManager.getConnection(url, user, password);
             
-            // Preparar la sentencia SQL para insertar los datos
             String query = "INSERT INTO users_iac (user_name, age, sex, height, weight, hip_circumference, iac, calculation_date) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, name);
@@ -94,21 +83,18 @@ public class iac_calculation extends HttpServlet {
             preparedStatement.setDouble(6, hip_circumference);
             preparedStatement.setDouble(7, result);
 
-            // Ejecutar la inserción
             preparedStatement.executeUpdate();
 
-            // Cerrar la conexión
             preparedStatement.close();
             connection.close();
         } catch (SQLException e) {
-                e.printStackTrace(); // Muestra el error en la consola
+                e.printStackTrace(); 
                 System.out.println("SQLException: " + e.getMessage());
                 System.out.println("SQLState: " + e.getSQLState());
                 System.out.println("VendorError: " + e.getErrorCode());
                 throw new ServletException("Error when connecting to the database", e);
             }
         
-        // Enviar el resultado a la JSP
         request.setAttribute("iac_result", result);
         request.getRequestDispatcher("index.jsp").forward(request, response);
     }
