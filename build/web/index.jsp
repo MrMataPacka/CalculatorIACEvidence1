@@ -8,10 +8,10 @@
     <body>
         <h1>IAC.CALCULATOR</h1>
         <form action="iac_calculation" method="post">
-            NAME: <input type="text" name="name" required><br>  <!-- Corregido a text -->
-            AGE: <input type="number" name="age" required><br>  <!-- Se mantiene number -->
+            NAME: <input type="text" name="name" required><br> 
+            AGE: <input type="number" name="age" required><br>
             SEX: 
-            <select name="sex" required>                       <!-- Usamos un select para sex -->
+            <select name="sex" required>                     
                 <option value="M">Male</option>
                 <option value="F">Female</option>
             </select><br>
